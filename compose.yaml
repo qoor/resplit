@@ -1,0 +1,46 @@
+volumes:
+  phpmyadmin_html:
+
+services:
+  mariadb:
+    image: mariadb:latest
+    expose:
+      - 3306
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: true
+      MARIADB_USER: resback
+      MARIADB_PASSWORD_HASH: "*7C7FDBBF0DF5A71E0A0E9B553584BE1FCB410E26"
+      MARIADB_DATABASE: resback
+      MARIADB_MYSQL_LOCALHOST_USER: true
+      TZ: Asia/Seoul
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  respec-team:
+    build: ./frontend
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      PMA_ABSOLUTE_URI: https://respec.team/treasure/
+      TZ: Asia/Seoul
+    volumes:
+      - /etc/letsencrypt/:/etc/letsencrypt/:ro
+      - phpmyadmin_html:/var/www/html/:ro
+    depends_on:
+      - phpmyadmin
+
+  phpmyadmin:
+    image: phpmyadmin:fpm-alpine
+    ports:
+      - 9000:80
+    environment:
+      PMA_HOST: mariadb
+      TZ: Asia/Seoul
+    volumes:
+      - phpmyadmin_html:/var/www/html/
+    depends_on:
+      - mariadb
