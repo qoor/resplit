@@ -20,7 +20,7 @@ services:
       retries: 3
 
   respec-team:
-    build: ./frontend
+    image: respec.team:3209/frontend-test
     ports:
       - 80:80
       - 443:443
