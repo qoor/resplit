@@ -1,0 +1,26 @@
+#!/bin/bash
+
+DOCKER=docker
+CERT_DIR=/etc/letsencrypt
+CERT_FILE=$CERT_DIR/live/respec.team/fullchain.pem
+KEY_FILE=$CERT_DIR/live/respec.team/privkey.pem
+PRIVATE_PORT=5000
+PUBLIC_PORT=3209
+
+$DOCKER stop registry
+$DOCKER rm registry
+
+$DOCKER run -d \
+  --restart=always \
+  --name=registry \
+  -v $CERT_DIR:$CERT_DIR \
+  -v $(pwd)/auth/:/auth/ \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:$PRIVATE_PORT \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=$CERT_FILE \
+  -e REGISTRY_HTTP_TLS_KEY=$KEY_FILE \
+  -e REGISTRY_AUTH=htpasswd \
+  -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+  -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+  -p $PUBLIC_PORT:$PRIVATE_PORT \
+  --publish published=$PRIVATE_PORT,target=$PRIVATE_PORT \
+  registry:latest
