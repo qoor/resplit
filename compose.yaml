@@ -30,6 +30,11 @@ services:
     volumes:
       - /etc/letsencrypt/:/etc/letsencrypt/:ro
       - phpmyadmin_html:/var/www/html/:ro
+    healthcheck:
+      test: curl --fail "https://localhost/" || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
     depends_on:
       - phpmyadmin
 
