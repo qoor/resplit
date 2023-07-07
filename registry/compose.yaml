@@ -1,5 +1,5 @@
 services:
-  registry:
+  respec-team-registry:
     image: registry:latest
     ports:
       - 3209:5000
@@ -20,4 +20,13 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./auth/:/auth/
+      - ./data/:/var/lib/registry
     restart: always
+
+  registry-web:
+    image: hyper/docker-registry-web:latest
+    ports:
+      - 3289:8080
+    environment:
+      REGISTRY_URL: https://respec.team:3209/v2
+      REGISTRY_NAME: respec.team:3209
