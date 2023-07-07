@@ -41,7 +41,7 @@ services:
   respec-team:
     image: respec.team:3209/respec-team
     volumes:
-      - frontend_html:/usr/share/nginx/html/:ro
+      - frontend_html:/respec-team/
 
   resback:
     image: respec.team:3209/resback
