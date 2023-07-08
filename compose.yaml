@@ -27,6 +27,8 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+      - /etc/letsencrypt/:/etc/letsencrypt/:ro
+      - phpmyadmin_html:/var/www/html/:ro
       - frontend_html:/usr/share/nginx/html/:ro
     healthcheck:
       test: curl -kL --fail "https://localhost/" || exit 1
@@ -40,8 +42,10 @@ services:
 
   respec-team:
     image: respec.team:3209/respec-team
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     volumes:
-      - frontend_html:/respec-team/
+      - frontend_html:/respec.team/
 
   resback:
     image: respec.team:3209/resback
