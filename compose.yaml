@@ -52,6 +52,10 @@ services:
     ports:
       - 3000:3000
     environment:
+      MYSQL_HOST: mariadb
+      MYSQL_USERNAME: resback
+      MYSQL_PASSWORD: kEH8A6SipKz0mFRCZ3MPjwOp1F4kfMw
+      MYSQL_DATABASE: resback
       TZ: Asia/Seoul
     healthcheck:
       test: curl -kL --fail "https://localhost:3000" || exit 1
