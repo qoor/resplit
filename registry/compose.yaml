@@ -4,13 +4,6 @@ services:
     ports:
       - 3209:5000
     environment:
-      REGISTRY_HTTP_ADDR: 0.0.0.0:5000
-      REGISTRY_HTTP_TLS_CERTIFICATE: /etc/letsencrypt/live/respec.team/fullchain.pem
-      REGISTRY_HTTP_TLS_KEY: /etc/letsencrypt/live/respec.team/privkey.pem
-      REGISTRY_AUTH: htpasswd
-      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
-      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
-      REGISTRY_STORAGE_DELETE_ENABLED: true
       TZ: Asia/Seoul
     healthcheck:
       test: curl -kL --fail https://localhost:3209/ || exit 1
@@ -21,12 +14,21 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./auth/:/auth/
       - ./data/:/var/lib/registry
+      - ./config.yml:/etc/docker/registry/config.yml
     restart: always
 
   registry-web:
-    image: hyper/docker-registry-web:latest
+    image: joxit/docker-registry-ui:latest
     ports:
-      - 3289:8080
+      - 3289:80
     environment:
-      REGISTRY_URL: https://respec.team:3209/v2
-      REGISTRY_NAME: respec.team:3209
+      SINGLE_REGISTRY: true
+      REGISTRY_URL: https://respec.team:3209
+      DELETE_IMAGES: true
+    healthcheck:
+      test: curl -L --fail http://localhost:3289/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      - respec-team-registry
