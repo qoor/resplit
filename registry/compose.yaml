@@ -20,17 +20,22 @@ services:
   registry-web:
     image: joxit/docker-registry-ui:latest
     ports:
-      - 3289:80
+      - 3289:443
     environment:
       SINGLE_REGISTRY: true
-      NGINX_PROXY_PASS_URL: https://respec.team:3209
+      NGINX_PROXY_PASS_URL: https://respec-team-registry:3209
       REGISTRY_TITLE: respec.team docker registry
       DELETE_IMAGES: true
       SHOW_CONTENT_DIGEST: true
+      USE_CONTROL_CACHE_HEADER: true
+      TZ: Asia/Seoul
     healthcheck:
       test: curl -L --fail http://localhost:3289/ || exit 1
       interval: 10s
       timeout: 5s
       retries: 3
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - respec-team-registry
