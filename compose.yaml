@@ -45,6 +45,9 @@ services:
       MYSQL_USERNAME: resback
       MYSQL_PASSWORD: kEH8A6SipKz0mFRCZ3MPjwOp1F4kfMw
       MYSQL_DATABASE: resback
+      GOOGLE_REDIRECT_URI: https://respec.team/callbacks/google
+      KAKAO_REDIRECT_URI: https://respec.team/callbacks/kakao
+      NAVER_REDIRECT_URI: https://respec.team/callbacks/naver
       TZ: Asia/Seoul
     healthcheck:
       test: curl -L --fail "http://localhost:3000" || exit 1
@@ -67,4 +70,3 @@ services:
 
 volumes:
   phpmyadmin_html:
-  frontend_html:

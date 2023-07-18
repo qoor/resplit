@@ -23,8 +23,10 @@ services:
       - 3289:80
     environment:
       SINGLE_REGISTRY: true
-      REGISTRY_URL: https://respec.team:3209
+      NGINX_PROXY_PASS_URL: https://respec.team:3209
+      REGISTRY_TITLE: respec.team docker registry
       DELETE_IMAGES: true
+      SHOW_CONTENT_DIGEST: true
     healthcheck:
       test: curl -L --fail http://localhost:3289/ || exit 1
       interval: 10s
